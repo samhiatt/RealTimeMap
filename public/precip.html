@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="js/lib/jquery.js"></script>
+  <script type="text/javascript" src="js/lib/underscore.js"></script>
+  <script type="text/javascript" src="js/lib/backbone.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+$(document).ready(function(){
+    var Layer = Backbone.Model.extend({
+    //    urlRoot: '/user',
+        defaults: {
+            name: "Untitled Layer",
+            
+        },
+        initialize: function(l){
+            console.log("Initializing "+l.name);
+        }
+    });
+
+    var layer = new Layer({ name: "Precip Start"});
+    
+    var PrecipEvent = Backbone.Model.extend({
+        getStartTime: function(){
+            if (!!this.attributes.startTime) return new Date(this.attributes.startTime*1000);
+            else return false;
+        },
+        getEndTime: function(){
+            if (!!this.attributes.endTime) return new Date(this.attributes.endTime*1000);
+            else return false;
+        },
+        initialize: function(){
+            this.on("change", function(){
+                console.log("changed!",this);
+            });
+        }
+    });
+    var PrecipEventCollection = Backbone.Collection.extend({
+        defaults: {
+            url : "http://wxdata.weather.com/wxdata/hirad_precip/get.js"
+                    +"?key=97ce49e2-cf1b-11e0-94e9-001d092f59fc"
+                    +"&cb=callback"
+        },
+        //url: "precipStub.json",
+        urlRoot: //"http://wxdata.weather.com/wxdata/hirad_precip/get.js"
+                  "twcproxy"
+                    +"?key=97ce49e2-cf1b-11e0-94e9-001d092f59fc"
+                    +"&cb=callback",
+        model: PrecipEvent,
+        getFilteredPrecipEvents: function() {
+            return this.filter(function(e){
+                return (e.eventType!=0 && e.getEndTime() > new Date()) && (e.getStartTime() < new Date((new Date()).valueOf()+2*60*60*1000));
+            });
+        },
+        initialize: function(p){
+            this.url= function(u){
+                console.log(this,p,u);
+                return this.urlRoot+"&lat="+this.tecciPoint.lat+"&lng="+this.tecciPoint.lng;
+            };
+            //this.url = this.parameters.url;
+            if (!!p) { this.tecciPoint = p; };
+            if (!!p.tecci_id) { this.tecci_id = p.tecci_id; };
+            console.log("Initializing precip event collection ",this);
+            this.fetch().done(function(data){
+                this.tecci_id = data[0].key;
+            }.bind(this));
+        }
+    });
+    
+    var TecciPoint = Backbone.Model.extend({
+        defaults: {
+            /*url : "http://wxdata.weather.com/wxdata/hirad_precip/get.js"
+                    +"?key=97ce49e2-cf1b-11e0-94e9-001d092f59fc"
+                    //+"&lat=34.72938895539459&lng=-98.11173529268649"
+                    +"&cb=callback",*/
+        },
+        //url: "precipStub.json",
+        tecci_id: null,
+        lat: 34.72938895539459,
+        lng: -98.11173529268649,
+        initialize: function(){
+            console.log("Initializing tecci point", this);
+            this.precipEventCollection = window.pec = new PrecipEventCollection(this);
+            //this.url = function(){return this.attributes.url+"&lat="+this.get('lat')+"&lng="+this.get('lng');};
+            //this.url = this.get('url');
+            //this.fetch({dataType:'jsonp',jsonp:'cb'});
+            //this.on("all",function(eventName){console.log(eventName, this);});
+            //this.on("change", function(){
+                //this.tecci_id = this.attributes[0].key;
+            //});
+            //this.fetch();
+        }
+    });
+    var TecciPointCollection = Backbone.Collection.extend({
+        defaults: {
+            layer: layer
+        },
+        model: TecciPoint,
+        initialize: function(tpl){
+            console.log("Initializing tecci points:", tpl);
+        }
+    });
+    
+    var tp = new TecciPoint;
+    //var tp2 = new TecciPoint();
+    var tpc = window.tpc = new TecciPointCollection([tp]);
+    
+    var LayerInfo = Backbone.View.extend({
+        initialize: function(){
+            this.render();
+        },
+        render: function(){
+            // Compile the template using underscore
+            var template = _.template( $("#layerinfo_template").html(), {layer:this.options.layer} );
+            // Load the compiled HTML into the Backbone "el"
+            this.$el.html( template );
+        },
+        events: {
+            "click div": "doSearch"
+        },
+        doSearch: function( event ){
+            // Button clicked, you can access the element that was clicked with event.currentTarget
+            alert( "ouch!" );
+        }
+    });
+    var layerInfo = new LayerInfo({ el: $("#content"), layer: layer });
+    
+});
+</script>
+<script type="text/template" id="layerinfo_template">
+    <h1><%= layer.attributes.name %></h1>
+    <div>blank</div>
+</script>
+<div id="main" class="fullscreen">
+    <div id="content"></div>
+</div>
+</body>
+</html>

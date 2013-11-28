@@ -1,0 +1,18 @@
+{>"shared/base"/}
+
+{<pageScripts}
+  <script type="text/javascript" src="/js/lib/jquery.js"></script>
+  <script type="text/javascript" src="/js/lib/underscore.js"></script>
+  <script type="text/javascript" src="/js/lib/backbone.js"></script>
+  <script type="text/javascript" src="/js/layerinfo.js"></script>
+{/pageScripts}
+
+{<pageContent}
+  <script type="text/template" id="layerinfo_template">
+    <h1><%= layer.attributes.name %></h1>
+    <div>blank</div>
+  </script>
+  <div id="main" class="fullscreen">
+    <div id="content">Layer: {id}</div>
+  </div>
+{/pageContent}

@@ -5,7 +5,7 @@ var express = require('express'),
     mongoose = require('mongoose'),
     backboneio = require('backbone.io');
 
-var secret = 'your secret here',
+var secret = 'kuyjtkyrcfyvfikylbuykvdtshrc',
     port = process.env.PORT || 3700;
 
 var app = express(),

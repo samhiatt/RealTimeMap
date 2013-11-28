@@ -12,12 +12,19 @@ define(function (require) {
     events: {
       'click map': 'onClick'
     },
-
     initialize: function () {
-      // Loads the required style sheets
-      utils.loadCss('/css/leaflet.css');
+        this.defaultMapOptions = { 
+            updateWhenIdle: false,
+            unloadInvisibleTiles: false,
+            doubleClickZoom: false,
+            center: [ -23.5, -46.6167 ],
+            zoom: 14,
+            // Add draw control if `Leaflet.draw` plugin was loaded.
+            drawControl: (L.Draw != null)
+        },
+        // Loads the required style sheets
+        utils.loadCss('/css/leaflet.css');
     },
-
     onClick: function (e) {
       var lat = e.latlng.lat,
           lng = e.latlng.lng,

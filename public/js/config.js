@@ -21,13 +21,15 @@ var cfg = {
     'text': 'lib/require/text',
     /* Libs */
     'dust': 'lib/dust',
+    //'leaflet': 'https://c9.io/yosemitesam/backbone_leaflet/workspace/lib/js/leaflet',
     'leaflet': 'lib/leaflet',
     'jquery': 'lib/jquery',
     'underscore': 'lib/underscore',
     'backbone': 'lib/backbone',
     'socket.io': 'lib/socket.io',
     'backbone.io': 'lib/backbone.io',
-    'backbone.leaflet': 'lib/backbone.leaflet'
+    'backbone.leaflet': 'https://c9.io/yosemitesam/backbone_leaflet/workspace/src/backbone.leaflet'
+    //'backbone.leaflet': 'lib/backbone.leaflet'
     /* App modules */
   },
    /* Configuring libs to be used as AMD modules */
